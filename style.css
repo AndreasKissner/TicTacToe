@@ -1,0 +1,51 @@
+body {
+    background-color: #323232;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    margin: 0;
+
+}
+
+#content {
+    margin-top: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+td {
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 36px;
+    font-weight: bold;
+    border: 5px solid white;
+}
+
+/* Nur innere Linien sichtbar machen */
+tr:first-child td {
+    border-top: none;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr td:first-child {
+    border-left: none;
+}
+
+tr td:last-child {
+    border-right: none;
+}
