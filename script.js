@@ -1,36 +1,70 @@
 let fields = [
-    "cross",
-   "cross",
-    "cross",
     null,
     null,
     null,
     null,
     null,
-    "circle"
+    null,
+    null,
+    null,
+    null,
+    
 ]
-
-function init(){
-    render();
-}
+let currentPlayer = 'circle';  // Aktueller Spieler
 
 function render() {
-    let html = '<table>';
+    let html = '<table>';//Varibale mit dem ANfang des HTML Codes also table
 
-    for (let i = 0; i < 3; i++) {
-        html += '<tr>';
+    for (let i = 0; i < 3; i++) {  // àussere Schleife geht 3 mal durch . Es sind 3 Zeilen tr als 3 mal
+        html += '<tr>';  // Neue Tabellen zeile tr
+
         for (let j = 0; j < 3; j++) {
-            let index = i * 3 + j;
-            let symbol = fields[index] === 'circle' ?  generateAnimatedCircleSVG():
-                         fields[index] === 'cross' ? generateAnimatedXSVG() : '';
-            html += `<td>${symbol}</td>`;
+            let index = i * 3 + j;// Berechnet den Index im Field Array
+            let cellContent = '';  // VAriable für späeteren cellContnent ob x oder o
+
+            if (fields[index] === 'circle') {
+                cellContent = generateAnimatedCircleSVG(); // Wenn man Kreis SPeiler drückt kommt Krei
+            } else if (fields[index] === 'cross') {  // Wenn Kreuz Spieler drückt dann Kreuz
+                cellContent = generateAnimatedXSVG();
+            }
+            if (fields[index] === null) {
+                html += `<td onclick="handleClick(${index}, this)"></td>`;// Fügt eine neues feld hinzu mit kreis oder Kreuz
+
+            } else {
+                html += `<td>${cellContent}</td>`; // hier Wird dann Cell content rein gemacht
+            }
         }
-        html += '</tr>';
+        html += '</tr>'; //3 Spalte is tvoll wird mit einem tr geschlossen
     }
 
-    html += '</table>';
-    document.getElementById('content').innerHTML = html;
+    html += '</table>';  //Tabelle wird gesxchlossen
+    document.getElementById('content').innerHTML = html; // Hier wird der ganze HTML(table) Inhalt auf die Webseite gemacht
 }
+
+function handleClick(fieldIndex, clickedCell) {
+    fields[fieldIndex] = currentPlayer; // Speichert aktuellen SPielzug umd zu wissen anch dem render wer und was dran ist
+    clickedCell.innerHTML = currentPlayer === 'circle' // Ternary Operator
+        ? generateAnimatedCircleSVG() 
+        : generateAnimatedXSVG(); 
+
+        // Hier die alte if Form:
+/*         if (currentPlayer === 'circle') {
+    clickedCell.innerHTML = generateAnimatedCircleSVG();
+} else {
+    clickedCell.innerHTML = generateAnimatedXSVG();
+}
+ */
+    clickedCell.onclick = null; // Klick deaktivieren
+    currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle'; // Ternary
+    //Alte if
+/*     if (currentPlayer === 'circle') {
+    currentPlayer = 'cross';
+} else {
+    currentPlayer = 'circle';
+} */
+
+}
+
 
 function generateAnimatedCircleSVG() {
     return `
