@@ -8,8 +8,15 @@ let fields = [
     null,
     null,
     null,
-    
 ]
+
+const winCombos = [
+  [0,1,2], [3,4,5], [6,7,8], // Reihen
+  [0,3,6], [1,4,7], [2,5,8], // Spalten
+  [0,4,8], [2,4,6]           // Diagonalen
+];
+
+
 let currentPlayer = 'circle';  // Aktueller Spieler
 
 function render() {
@@ -42,27 +49,66 @@ function render() {
 }
 
 function handleClick(fieldIndex, clickedCell) {
-    fields[fieldIndex] = currentPlayer; // Speichert aktuellen SPielzug umd zu wissen anch dem render wer und was dran ist
-    clickedCell.innerHTML = currentPlayer === 'circle' // Ternary Operator
-        ? generateAnimatedCircleSVG() 
-        : generateAnimatedXSVG(); 
+  fields[fieldIndex] = currentPlayer;
+  clickedCell.innerHTML = currentPlayer === 'circle' 
+      ? generateAnimatedCircleSVG() 
+      : generateAnimatedXSVG();
+  clickedCell.onclick = null;
 
-        // Hier die alte if Form:
-/*         if (currentPlayer === 'circle') {
-    clickedCell.innerHTML = generateAnimatedCircleSVG();
-} else {
-    clickedCell.innerHTML = generateAnimatedXSVG();
+  if (checkWinner()) return;
+
+  currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle';
 }
- */
-    clickedCell.onclick = null; // Klick deaktivieren
-    currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle'; // Ternary
-    //Alte if
-/*     if (currentPlayer === 'circle') {
-    currentPlayer = 'cross';
-} else {
-    currentPlayer = 'circle';
-} */
 
+
+function checkWinner() {
+  for (let i = 0; i < winCombos.length; i++) {
+    const [a, b, c] = winCombos[i];
+
+    if (
+      fields[a] &&
+      fields[a] === fields[b] &&
+      fields[a] === fields[c]
+    ) {
+      drawWinLine([a, b, c]);
+      return true;
+    }
+  }
+  return false;
+}
+
+function drawWinLine(combo) {
+  const table = document.querySelector("table");
+  const cells = table.querySelectorAll("td");
+  const cellA = cells[combo[0]];
+  const cellC = cells[combo[2]];
+
+  const tableRect = table.getBoundingClientRect();
+  const rectA = cellA.getBoundingClientRect();
+  const rectC = cellC.getBoundingClientRect();
+
+  // NEU: Positionen relativ zur Tabelle berechnen
+  const x1 = rectA.left - tableRect.left + rectA.width / 2;
+  const y1 = rectA.top - tableRect.top + rectA.height / 2;
+  const x2 = rectC.left - tableRect.left + rectC.width / 2;
+  const y2 = rectC.top - tableRect.top + rectC.height / 2;
+
+  const length = Math.hypot(x2 - x1, y2 - y1);
+  const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+  const line = document.createElement("div");
+  line.style.position = "absolute";
+  line.style.background = "white";
+  line.style.height = "5px";
+  line.style.width = `${length + 10}px`;
+  line.style.left = `${x1}px`;
+  line.style.top = `${y1}px`;
+  line.style.transform = `rotate(${angle}deg) translateY(-50%)`;
+  line.style.transformOrigin = "left";
+
+  // Linie wird NICHT mehr im Body platziert, sondern in der Tabelle:
+  table.style.position = "relative"; // wichtig!
+  table.appendChild(line);
 }
 
 
@@ -115,3 +161,14 @@ window.addEventListener("load", () => {
 });
 
   
+function resetGame() {
+    fields = [null, null, null, null, null, null, null, null, null];
+    currentPlayer = 'circle';
+
+    // Entferne ggf. die Gewinnlinie:
+    const table = document.querySelector("table");
+    const lines = table.querySelectorAll("div");
+    lines.forEach(line => line.remove());
+
+    render();
+}

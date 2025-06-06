@@ -3,8 +3,17 @@ body {
     font-family: 'Open Sans', sans-serif;
     color: white;
     margin: 0;
-
+position:relative;
 }
+
+#gameWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Abstand zwischen Spielfeld und Button */
+    margin-top: 30px;
+}
+
 
 #content {
     margin-top: 75px;
@@ -53,4 +62,20 @@ tr td:first-child {
 
 tr td:last-child {
     border-right: none;
+}
+
+#resetBtn {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #303131;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+#resetBtn:hover {
+    background-color: #5b6062;
 }
